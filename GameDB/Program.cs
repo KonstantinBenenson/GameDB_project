@@ -1,5 +1,7 @@
-using GameDB;
+using GameDB.Configurations;
+using GameDB.Services;
 using Microsoft.EntityFrameworkCore;
+using GameDB.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +15,13 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<GameDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("Default"))
 );
+
+builder.Services.AddAutoMapper(typeof(MappingConfig));
+builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+builder.Services.AddScoped<IGenreRepository, GenreRepository>();
+builder.Services.AddScoped<IGameRepository, GameRepository>();
+builder.Services.AddScoped<IGameStudioRepository, GameStudioRepository>();
+builder.Services.AddScoped<IGenreGameRepository, GenreGameRepository>();
 
 var app = builder.Build();
 

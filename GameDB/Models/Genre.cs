@@ -1,9 +1,9 @@
-﻿using System.ComponentModel;
+﻿using GameDB.Models;
 using System.ComponentModel.DataAnnotations;
 
-namespace GameDB.Models
+namespace GameDB
 {
-    public class GameStudio : IModelBase
+    public class Genre : IModelBase
     {
         [Key]
         public int Id { get; set; }
@@ -11,7 +11,7 @@ namespace GameDB.Models
         [Required]
         public string Name { get; set; } = null!;
 
-        //One-to-Many
-        public IEnumerable<Game> Games { get; set; }
+        //Many-To-Many
+        public IEnumerable<Genre_Game> Genre_Games { get; set; } = null!;
     }
 }
