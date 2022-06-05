@@ -18,7 +18,7 @@ namespace GameDB.Services
             await _dbContext.SaveChangesAsync();
         }       
 
-        public virtual async Task<IEnumerable<T>> GetAllAsync()
+        public virtual async Task<IList<T>> GetAllAsync()
         {
             var objList = await _dbContext.Set<T>().ToListAsync();            
             return objList;

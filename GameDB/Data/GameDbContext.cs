@@ -61,6 +61,19 @@ namespace GameDB.Data
                     Name = "RPG"
                 }
                 );
+
+            modelBuilder.Entity<GameStudio>().HasData(
+                new GameStudio
+                {
+                    Id = 1,
+                    Name = "Blizzard"
+                },
+                new GameStudio
+                {
+                    Id = 2,
+                    Name = "Ubisoft"
+                }
+                );
         }
 
         public DbSet<Game> Games { get; set; }
