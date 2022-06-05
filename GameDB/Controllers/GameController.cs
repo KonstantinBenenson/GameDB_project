@@ -23,35 +23,21 @@ namespace GameDB.Controllers
         [HttpPost]
         public async Task<IActionResult> Post(CreateGameDTO gameDTO)
         {
-            if(!ModelState.IsValid)
-                return BadRequest(ModelState);
             if (gameDTO == null)
                 return BadRequest();
 
             var game = _mapper.Map<Game>(gameDTO);
 
-            await _gameRepository.CreateAsync(game);
-            await _ggRepository.AddRelationWithGenreAsync(gameDTO, game);
-            return Ok();          
-        }
-
-        [HttpPut]
-        public async Task<IActionResult> Put(int id, CreateGameDTO gameDTO)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-            if (id == 0 || gameDTO == null)
-                return BadRequest();
-
-            var game = await _gameRepository.GetByIdAsync(id);
-            if (game == null)
-                return NotFound(game);
-
-            _mapper.Map(gameDTO, game);
-            await _gameRepository.UpdateAsync(id, game);
-            await _ggRepository.UpdateRelationWithGenreAsync(game, gameDTO);
-
-            return Ok(game);
+            try
+            {
+                await _gameRepository.CreateAsync(game);
+                await _ggRepository.AddRelationWithGenreAsync(gameDTO, game);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }            
         }
 
         [HttpGet]
@@ -61,7 +47,7 @@ namespace GameDB.Controllers
             if(games == null)
                 return NotFound("No games are being stored");
             
-            var gamesDTO = _mapper.Map<IList<GetGameDTO>>(games);
+            var gamesDTO = _mapper.Map<IEnumerable<GetGameDTO>>(games);
             if (gamesDTO == null)
                 return NotFound();
 
@@ -69,10 +55,10 @@ namespace GameDB.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int id)
+        public async Task<IActionResult> Get(int id)
         {
             if (id == 0)
-                return BadRequest("The Game has not been found.");
+                return BadRequest("Game has not been found.");
 
             var game = await _gameRepository.GetByIdAsync(id);
             var gameDTO = _mapper.Map<GetGameDTO>(game);
@@ -87,10 +73,10 @@ namespace GameDB.Controllers
         public async Task<IActionResult> GetByGenre(string genre)
         {
             if (genre == null)
-                return BadRequest("The Genre is not available.");
+                return BadRequest("Genre is not available.");
 
             var games = await _gameRepository.GetByGenreAsync(genre);
-            var gamesDTO = _mapper.Map<IList<GetGameDTO>>(games);
+            var gamesDTO = _mapper.Map<IEnumerable<GetGameDTO>>(games);
 
             if (gamesDTO == null)
                 return NotFound();
@@ -98,19 +84,20 @@ namespace GameDB.Controllers
             return Ok(gamesDTO);
         }
 
-        [HttpGet("{studio}")]
-        public async Task<IActionResult> GetByStudio(string studio)
+
+        [HttpPut]
+        public async Task<IActionResult> Put(int id, CreateGameDTO gameDTO)
         {
-            if (studio == null)
-                return BadRequest("The Genre is not available.");
+            if (id == 0 || gameDTO == null)
+                return BadRequest();
 
-            var games = await _gameRepository.GetByStudioAsync(studio);
-            var gamesDTO = _mapper.Map<IList<GetGameDTO>>(games);
+            var game = await _gameRepository.GetByIdAsync(id);
+            if (game == null)
+                return NotFound(game);
+           
+            _mapper.Map(game, gameDTO);
 
-            if (gamesDTO == null)
-                return NotFound();
-
-            return Ok(gamesDTO);
+            return Ok(gameDTO);
         }
 
         [HttpDelete("{id}")]

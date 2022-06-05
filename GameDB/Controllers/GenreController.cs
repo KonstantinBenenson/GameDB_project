@@ -19,22 +19,19 @@ namespace GameDB.Controllers
             _mapper = mapper;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Post(CreateGenreDTO genreDTO)
+        [HttpGet]
+        [ActionName("Genres")]
+        public async Task<IActionResult> GetAll()
         {
-            if (!ModelState.IsValid)
-                return BadRequest(genreDTO);
-
-            var genre = _mapper.Map<Genre>(genreDTO);
-
-            if (genre == null)
-                return BadRequest();
-
-            await _repository.CreateAsync(genre);
-            return Ok(genre);
+            var genres = await _repository.GetAllAsync();
+            if(genres == null)
+                return NotFound("Genres have not been found.");
+            var genresDTO = _mapper.Map<IEnumerable<GetGenreDTO>>(genres);
+            return Ok(genresDTO);
         }
 
         [HttpGet(("{id}"))]
+        [ActionName("GenreById")]
         public async Task<IActionResult> GetById(int id)
         {
             if (id == 0)
@@ -49,16 +46,21 @@ namespace GameDB.Controllers
             return Ok(genreDTO);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAll()
+        // POST api/<GenreController>
+        [HttpPost]
+        public async Task<IActionResult> Post(CreateGenreDTO genreDTO)
         {
-            var genres = await _repository.GetAllAsync();
-            if(genres == null)
-                return NotFound("Genres have not been found.");
-            var genresDTO = _mapper.Map<IList<GetGenreDTO>>(genres);
-            return Ok(genresDTO);
+            if (!ModelState.IsValid)
+                return BadRequest(genreDTO);
+
+            var genre = _mapper.Map<Genre>(genreDTO);
+            
+            if(genre == null)
+                return BadRequest();
+
+            await _repository.CreateAsync(genre);
+            return Ok(genre);
         }
-              
 
         //// PUT api/<GenreController>/5
         //[HttpPut("{id}")]

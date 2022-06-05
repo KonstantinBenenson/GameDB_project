@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace GameDB.Controllers
 {
     [ApiController]
-    [Route("api/[controller]/[action]")]
+    [Route("api/[Controller]/[Action]")]
     public class GameStudioController : Controller
     {
         private readonly IGameStudioRepository _repository;
@@ -33,8 +33,16 @@ namespace GameDB.Controllers
             return Ok(studioDTO);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            var studios = await _repository.GetAllAsync();
+            var studiosDTO = _mapper.Map<IEnumerable<GetGameStudioDTO>>(studios);
+            return Ok(studiosDTO);
+        }
+
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int id)
+        public async Task<IActionResult> Get(int id)
         {
             if (id == 0)
                 return BadRequest();
@@ -47,27 +55,11 @@ namespace GameDB.Controllers
             return Ok(studioDTO);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAll()
-        {
-            var studios = await _repository.GetAllAsync();
-            var studiosDTO = _mapper.Map<IList<GetGameStudioDTO>>(studios);
-            return Ok(studiosDTO);
-        }
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, CreateGameStudioDTO gsDTO)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-            if (id == 0 || gsDTO == null)
-                return BadRequest();
-
-            var gameStudio = await _repository.GetByIdAsync(id);
-            _mapper.Map(gsDTO, gameStudio);
-            await _repository.UpdateAsync(id, gameStudio);     
-            
-            return Ok(gsDTO);
-        }
+        //    [HttpPut("{id}")]
+        //    public async Task<IActionResult> Put(int id, GameStudioDTO gsDTO)
+        //    {
+        //        return Task.CompletedTask;
+        //    }
+        //}
     }
 }

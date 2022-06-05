@@ -11,6 +11,6 @@ namespace GameDB.Models.DTOs
         [Range(1, int.MaxValue, ErrorMessage = "Value must be higher than 1")]
         [Required]
         public int GameStudioId { get; set; }
-        public IList<int> GenresId { get; set; }
+        public IEnumerable<int> GenresId { get; set; }
     }
 }

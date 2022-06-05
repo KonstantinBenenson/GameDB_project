@@ -12,6 +12,6 @@ namespace GameDB.Models
         public string Name { get; set; } = null!;
 
         //One-to-Many
-        public IList<Game> Games { get; set; }
+        public IEnumerable<Game> Games { get; set; }
     }
 }

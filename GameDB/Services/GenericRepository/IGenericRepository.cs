@@ -7,6 +7,6 @@
         Task DeleteByIdAsync(int id);
         Task DeleteRangeAsync(int[] ids);
         Task<T> GetByIdAsync(int id);
-        Task<IList<T>> GetAllAsync();
+        Task<IEnumerable<T>> GetAllAsync();
     }
 }
