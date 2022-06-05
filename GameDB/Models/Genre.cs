@@ -12,6 +12,6 @@ namespace GameDB
         public string Name { get; set; } = null!;
 
         //Many-To-Many
-        public IEnumerable<Genre_Game> Genre_Games { get; set; } = null!;
+        public IList<Genre_Game> Genre_Games { get; set; } = null!;
     }
 }

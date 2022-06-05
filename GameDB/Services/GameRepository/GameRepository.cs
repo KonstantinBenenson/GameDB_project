@@ -14,11 +14,20 @@ namespace GameDB.Services
             _dbContext = context;
         }
 
-        public async Task<IEnumerable<Game>> GetByGenreAsync(string genre)
+        public async Task<IList<Game>> GetByGenreAsync(string genre)
         {
             var games = await _dbContext.Games
                 .Where(x => x.Genre_Games
-                .Any(g => g.Genre.Name == genre)).ToListAsync();
+                .Any(g => g.Genre.Name == genre))
+                .ToListAsync();
+            return games;
+        }
+
+        public async Task<IList<Game>> GetByStudioAsync(string studio)
+        {
+            var games = await _dbContext.Games
+                .Where(x => x.GameStudio.Name == studio)
+                .ToListAsync();
             return games;
         }
     }
